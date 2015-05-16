@@ -251,10 +251,10 @@ public class Cube implements Disposable {
                 for(int k = 0; k < cubelets[0][0].length; k++) {
                     cubelets[i][j][k] = new PlainCubelet(
                             PlainCubelet.CubeletColor.BLUE,
-                            PlainCubelet.CubeletColor.GREEN,
-                            PlainCubelet.CubeletColor.ORANGE,
                             PlainCubelet.CubeletColor.RED,
+                            PlainCubelet.CubeletColor.ORANGE,
                             PlainCubelet.CubeletColor.YELLOW,
+                            PlainCubelet.CubeletColor.GREEN,
                             PlainCubelet.CubeletColor.WHITE);
                     cubelets[i][j][k].setMask(j == cubelets.length-1, j == 0, i == 0, i == cubelets.length-1,  k == cubelets.length - 1, k == 0);
                 }
