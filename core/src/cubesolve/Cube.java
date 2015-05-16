@@ -134,7 +134,9 @@ public class Cube implements Disposable {
     public void rotateColumn(int row) {
         for(int y = 0; y < size; y++) {
             for(int z = 0; z < size; z++) {
-                cubelets[row][y][z].rotateTallCCW();
+                Cubelet cblt = cubelets[row][y][z];
+                if(cblt == null)continue;
+                cblt.rotateTallCCW();
             }
         }
 
@@ -149,7 +151,9 @@ public class Cube implements Disposable {
     public void rotateRow(int row) {
         for(int x = 0; x < size; x++) {
             for(int z = 0; z < size; z++) {
-                cubelets[x][row][z].rotateWideCCW();
+                Cubelet cblt = cubelets[x][row][z];
+                if(cblt == null)continue;
+                cblt.rotateWideCCW();
             }
         }
 
@@ -164,7 +168,9 @@ public class Cube implements Disposable {
     public void rotateFace(int row) {
         for(int x = 0; x < size; x++) {
             for(int y = 0; y < size; y++) {
-                cubelets[x][y][row].rotateDepthCCW();
+                Cubelet cblt = cubelets[x][y][row];
+                if(cblt == null)continue;
+                cblt.rotateDepthCCW();
             }
         }
 
@@ -226,7 +232,9 @@ public class Cube implements Disposable {
         for (int xT = 0; xT < cubelets.length; xT++) {
             for (int yT = 0; yT < cubelets[0].length; yT++) {
                 for (int zT = 0; zT < cubelets[0].length; zT++) {
-                    Mesh[] cubeletMeshes = cubelets[xT][yT][zT].drawMeshes(builder, startX + xT * 3.2f, startY + yT * 3.2f, startZ + zT * 3.2f, 3);
+                    Cubelet cblt = cubelets[xT][yT][zT];
+                    if(cblt == null)continue;
+                    Mesh[] cubeletMeshes = cblt.drawMeshes(builder, startX + xT * 3.2f, startY + yT * 3.2f, startZ + zT * 3.2f, 3);
                     for (Mesh cubeletMesh : cubeletMeshes) {
                         meshes[meshNum] = cubeletMesh;
                         meshNum++;
@@ -249,6 +257,10 @@ public class Cube implements Disposable {
         for(int i = 0; i < cubelets.length; i++) {
             for(int j = 0; j < cubelets[0].length; j++) {
                 for(int k = 0; k < cubelets[0][0].length; k++) {
+                    // Don't add cubelets that are internal
+                    if((i > 0 && i < cubelets.length - 1)
+                            && (j > 0 && j < cubelets.length - 1)
+                            && (k > 0 && k < cubelets.length - 1))continue;
                     cubelets[i][j][k] = new PlainCubelet(
                             PlainCubelet.CubeletColor.BLUE,
                             PlainCubelet.CubeletColor.RED,
