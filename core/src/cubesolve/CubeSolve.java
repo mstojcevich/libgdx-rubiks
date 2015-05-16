@@ -35,7 +35,7 @@ public class CubeSolve implements ApplicationListener {
 			"X - Rotate Middle",
 			"C - Rotate Back",
 			"",
-			"--Other",
+			"--Other--",
 			"R - Randomize",
 			"T - Reset"
 	};
