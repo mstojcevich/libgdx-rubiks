@@ -222,7 +222,7 @@ public class PlainCubelet implements Cubelet {
     }
 
     public enum CubeletColor {
-        GREEN(0, 1, 0), YELLOW(1, 1, 0), RED(1, 0, 0), BLUE(0, 0, 1), WHITE(1, 1, 1), ORANGE(1, 0.5f, 0);
+        GREEN(0, 1, 0), YELLOW(0.8f, 0.8f, 0), RED(1, 0, 0), BLUE(0, 0, 1), WHITE(1, 1, 1), ORANGE(0.8f, 0.3f, 0);
 
         private final Color gdxColor;
 
