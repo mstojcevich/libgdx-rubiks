@@ -1,13 +1,10 @@
 package cubesolve;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Disposable;
@@ -25,7 +22,6 @@ public class Cube implements Disposable {
     private Model model;
     private ModelInstance modelInstance;
     private boolean disableAutoRerender;
-    private Texture cubeletTexture;
 
     /**
      * Creates a Rubik's cube with the default configuration
@@ -35,8 +31,6 @@ public class Cube implements Disposable {
     public Cube(int size) {
         this.size = size;
         this.cubelets = new Cubelet[size][size][size];
-
-        cubeletTexture = new Texture(Gdx.files.internal("cubelet.png"));
 
         fillWithDefault();
         rerenderCube();
@@ -227,12 +221,14 @@ public class Cube implements Disposable {
         MeshBuilder builder = new MeshBuilder();
         Mesh[] meshes = new Mesh[cubelets.length*cubelets.length*cubelets.length*6];
         float startX, startY, startZ;
-        startX = startY = startZ = -cubelets.length*3f/2f;
+        startX = startY = startZ = -cubelets.length*3.2f/2f;
         int meshNum = 0;
         for (int xT = 0; xT < cubelets.length; xT++) {
             for (int yT = 0; yT < cubelets[0].length; yT++) {
                 for (int zT = 0; zT < cubelets[0].length; zT++) {
-                    Mesh[] cubeletMeshes = cubelets[xT][yT][zT].drawMeshes(builder, startX + xT * 3f, startY + yT * 3f, startZ + zT * 3f, 3);
+                    Cubelet cblt = cubelets[xT][yT][zT];
+                    if(cblt == null)continue;
+                    Mesh[] cubeletMeshes = cblt.drawMeshes(builder, startX + xT * 3f, startY + yT * 3f, startZ + zT * 3f, 3);
                     for (Mesh cubeletMesh : cubeletMeshes) {
                         meshes[meshNum] = cubeletMesh;
                         meshNum++;
@@ -245,9 +241,7 @@ public class Cube implements Disposable {
         int num = 0;
         for(Mesh mesh : meshes) {
             if(mesh == null)continue;
-            modelBuilder.part("cubemesh" + num, mesh, GL20.GL_TRIANGLES,
-                    new Material(ColorAttribute.createSpecular(Color.WHITE),
-                    TextureAttribute.createDiffuse(cubeletTexture)));
+            modelBuilder.part("cubemesh" + num, mesh, GL20.GL_TRIANGLES, new Material(ColorAttribute.createSpecular(Color.WHITE)));
         }
         this.model = modelBuilder.end();
         this.modelInstance = new ModelInstance(model);
@@ -257,6 +251,10 @@ public class Cube implements Disposable {
         for(int i = 0; i < cubelets.length; i++) {
             for(int j = 0; j < cubelets[0].length; j++) {
                 for(int k = 0; k < cubelets[0][0].length; k++) {
+                    // Don't add cubelets that are internal
+                    if((i > 0 && i < cubelets.length - 1)
+                            && (j > 0 && j < cubelets.length - 1)
+                            && (k > 0 && k < cubelets.length - 1))continue;
                     cubelets[i][j][k] = new PlainCubelet(
                             PlainCubelet.CubeletColor.BLUE,
                             PlainCubelet.CubeletColor.RED,
