@@ -1,10 +1,13 @@
 package cubesolve;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Disposable;
@@ -22,6 +25,7 @@ public class Cube implements Disposable {
     private Model model;
     private ModelInstance modelInstance;
     private boolean disableAutoRerender;
+    private Texture cubeletTexture;
 
     /**
      * Creates a Rubik's cube with the default configuration
@@ -31,6 +35,8 @@ public class Cube implements Disposable {
     public Cube(int size) {
         this.size = size;
         this.cubelets = new Cubelet[size][size][size];
+
+        cubeletTexture = new Texture(Gdx.files.internal("cubelet.png"));
 
         fillWithDefault();
         rerenderCube();
@@ -134,7 +140,9 @@ public class Cube implements Disposable {
     public void rotateColumn(int row) {
         for(int y = 0; y < size; y++) {
             for(int z = 0; z < size; z++) {
-                cubelets[row][y][z].rotateTallCCW();
+                Cubelet cblt = cubelets[row][y][z];
+                if(cblt == null)continue;
+                cblt.rotateTallCCW();
             }
         }
 
@@ -149,7 +157,9 @@ public class Cube implements Disposable {
     public void rotateRow(int row) {
         for(int x = 0; x < size; x++) {
             for(int z = 0; z < size; z++) {
-                cubelets[x][row][z].rotateWideCCW();
+                Cubelet cblt = cubelets[x][row][z];
+                if(cblt == null)continue;
+                cblt.rotateWideCCW();
             }
         }
 
@@ -164,7 +174,9 @@ public class Cube implements Disposable {
     public void rotateFace(int row) {
         for(int x = 0; x < size; x++) {
             for(int y = 0; y < size; y++) {
-                cubelets[x][y][row].rotateDepthCCW();
+                Cubelet cblt = cubelets[x][y][row];
+                if(cblt == null)continue;
+                cblt.rotateDepthCCW();
             }
         }
 
@@ -221,7 +233,7 @@ public class Cube implements Disposable {
         MeshBuilder builder = new MeshBuilder();
         Mesh[] meshes = new Mesh[cubelets.length*cubelets.length*cubelets.length*6];
         float startX, startY, startZ;
-        startX = startY = startZ = -cubelets.length*3.2f/2f;
+        startX = startY = startZ = -cubelets.length*3f/2f;
         int meshNum = 0;
         for (int xT = 0; xT < cubelets.length; xT++) {
             for (int yT = 0; yT < cubelets[0].length; yT++) {
@@ -241,7 +253,9 @@ public class Cube implements Disposable {
         int num = 0;
         for(Mesh mesh : meshes) {
             if(mesh == null)continue;
-            modelBuilder.part("cubemesh" + num, mesh, GL20.GL_TRIANGLES, new Material(ColorAttribute.createSpecular(Color.WHITE)));
+            modelBuilder.part("cubemesh" + num, mesh, GL20.GL_TRIANGLES,
+                    new Material(ColorAttribute.createSpecular(Color.WHITE),
+                            TextureAttribute.createDiffuse(cubeletTexture)));
         }
         this.model = modelBuilder.end();
         this.modelInstance = new ModelInstance(model);
