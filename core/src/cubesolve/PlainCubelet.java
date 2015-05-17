@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import sun.security.provider.certpath.Vertex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +36,9 @@ public class PlainCubelet implements Cubelet {
     public Mesh[] drawMeshes(MeshBuilder builder, float x, float y, float z, float depth) {
         List<Mesh> meshes = new ArrayList<Mesh>();
         if(topMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(topColor.getGdxColor());
+            builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y + depth, z + depth,
                     x + depth, y + depth, z + depth,
                     x + depth, y + depth, z,
@@ -45,8 +47,9 @@ public class PlainCubelet implements Cubelet {
             meshes.add(builder.end());
         }
         if(bottomMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(bottomColor.getGdxColor());
+            builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y, z,
                     x + depth, y, z,
                     x + depth, y, z + depth,
@@ -56,8 +59,9 @@ public class PlainCubelet implements Cubelet {
         }
 
         if(southMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(southColor.getGdxColor());
+            builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y + depth, z,
                     x + depth, y + depth, z,
                     x + depth, y, z,
@@ -66,8 +70,9 @@ public class PlainCubelet implements Cubelet {
             meshes.add(builder.end());
         }
         if(northMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(northColor.getGdxColor());
+            builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y, z + depth,
                     x + depth, y, z + depth,
                     x + depth, y + depth, z + depth,
@@ -77,7 +82,8 @@ public class PlainCubelet implements Cubelet {
         }
 
         if(westMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.setUVRange(0, 0, 1, 1);
             builder.setColor(westColor.getGdxColor());
             builder.rect(x, y, z + depth,
                     x, y + depth, z + depth,
@@ -87,7 +93,8 @@ public class PlainCubelet implements Cubelet {
             meshes.add(builder.end());
         }
         if(eastMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
+            builder.setUVRange(0, 0, 1, 1);
             builder.setColor(eastColor.getGdxColor());
             builder.rect(x + depth, y, z,
                     x + depth, y + depth, z,
