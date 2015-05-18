@@ -33,10 +33,8 @@ public class PlainCubelet implements Cubelet {
     }
 
     @Override
-    public Mesh[] drawMeshes(MeshBuilder builder, float x, float y, float z, float depth) {
-        List<Mesh> meshes = new ArrayList<Mesh>();
+    public void drawMeshes(MeshBuilder builder, float x, float y, float z, float depth) {
         if(topMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(topColor.getGdxColor());
             builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y + depth, z + depth,
@@ -44,10 +42,8 @@ public class PlainCubelet implements Cubelet {
                     x + depth, y + depth, z,
                     x, y + depth, z,
                     0, 1, 0);
-            meshes.add(builder.end());
         }
         if(bottomMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(bottomColor.getGdxColor());
             builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y, z,
@@ -55,11 +51,9 @@ public class PlainCubelet implements Cubelet {
                     x + depth, y, z + depth,
                     x, y, z + depth,
                     0, -1, 0);
-            meshes.add(builder.end());
         }
 
         if(southMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(southColor.getGdxColor());
             builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y + depth, z,
@@ -67,10 +61,8 @@ public class PlainCubelet implements Cubelet {
                     x + depth, y, z,
                     x, y, z,
                     0, 0, -1);
-            meshes.add(builder.end());
         }
         if(northMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setColor(northColor.getGdxColor());
             builder.setUVRange(0, 0, 1, 1);
             builder.rect(x, y, z + depth,
@@ -78,11 +70,9 @@ public class PlainCubelet implements Cubelet {
                     x + depth, y + depth, z + depth,
                     x, y + depth, z + depth,
                     0, 0, 1);
-            meshes.add(builder.end());
         }
 
         if(westMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setUVRange(0, 0, 1, 1);
             builder.setColor(westColor.getGdxColor());
             builder.rect(x, y, z + depth,
@@ -90,10 +80,8 @@ public class PlainCubelet implements Cubelet {
                     x, y + depth, z,
                     x, y, z,
                     -1, 0, 0);
-            meshes.add(builder.end());
         }
         if(eastMask) {
-            builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
             builder.setUVRange(0, 0, 1, 1);
             builder.setColor(eastColor.getGdxColor());
             builder.rect(x + depth, y, z,
@@ -101,10 +89,7 @@ public class PlainCubelet implements Cubelet {
                     x + depth, y + depth, z + depth,
                     x + depth, y, z + depth,
                     1, 0, 0);
-            meshes.add(builder.end());
         }
-
-        return meshes.toArray(new Mesh[meshes.size()]);
     }
 
     @Override

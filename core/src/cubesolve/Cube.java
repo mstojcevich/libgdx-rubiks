@@ -1,10 +1,7 @@
 package cubesolve;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -231,32 +228,24 @@ public class Cube implements Disposable {
             model.dispose();
 
         MeshBuilder builder = new MeshBuilder();
-        Mesh[] meshes = new Mesh[cubelets.length*cubelets.length*cubelets.length*6];
         float startX, startY, startZ;
         startX = startY = startZ = -cubelets.length*3f/2f;
-        int meshNum = 0;
+        builder.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates | VertexAttributes.Usage.ColorPacked | VertexAttributes.Usage.Normal, GL20.GL_TRIANGLES);
         for (int xT = 0; xT < cubelets.length; xT++) {
             for (int yT = 0; yT < cubelets[0].length; yT++) {
                 for (int zT = 0; zT < cubelets[0].length; zT++) {
                     Cubelet cblt = cubelets[xT][yT][zT];
                     if(cblt == null)continue;
-                    Mesh[] cubeletMeshes = cblt.drawMeshes(builder, startX + xT * 3f, startY + yT * 3f, startZ + zT * 3f, 3);
-                    for (Mesh cubeletMesh : cubeletMeshes) {
-                        meshes[meshNum] = cubeletMesh;
-                        meshNum++;
-                    }
+                    cblt.drawMeshes(builder, startX + xT * 3f, startY + yT * 3f, startZ + zT * 3f, 3);
                 }
             }
         }
+        Mesh mesh = builder.end();
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
-        int num = 0;
-        for(Mesh mesh : meshes) {
-            if(mesh == null)continue;
-            modelBuilder.part("cubemesh" + num, mesh, GL20.GL_TRIANGLES,
-                    new Material(ColorAttribute.createSpecular(Color.WHITE),
-                            TextureAttribute.createDiffuse(cubeletTexture)));
-        }
+        modelBuilder.part("cubemesh", mesh, GL20.GL_TRIANGLES,
+                new Material(ColorAttribute.createSpecular(Color.WHITE),
+                        TextureAttribute.createDiffuse(cubeletTexture)));
         this.model = modelBuilder.end();
         this.modelInstance = new ModelInstance(model);
     }

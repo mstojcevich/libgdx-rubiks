@@ -17,7 +17,7 @@ public interface Cubelet {
      * @param z       Z position to start the cubelet
      * @param depth   Width/Height/Depth of the cubelet in gl units
      */
-    Mesh[] drawMeshes(MeshBuilder builder, float x, float y, float z, float depth);
+    void drawMeshes(MeshBuilder builder, float x, float y, float z, float depth);
 
     /**
      * Rotate the cubelet tall-wise counter-clockwise
