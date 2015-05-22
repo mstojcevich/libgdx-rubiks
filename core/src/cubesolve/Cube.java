@@ -221,6 +221,7 @@ public class Cube implements Disposable, RenderableProvider {
     @Override
     public void dispose() {
         this.mesh.dispose();
+        this.cubeletTexture.dispose();
     }
 
     /**
