@@ -1,8 +1,8 @@
 package cubesolve;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -78,8 +78,11 @@ public class CubeSolve implements ApplicationListener {
 
 		fpsFont = new BitmapFont();
 
-		controlsCache = new BitmapFontCache(fpsFont, true);
-		createControlsCache();
+		if(Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+				|| Gdx.app.getType().equals(Application.ApplicationType.WebGL)) {
+			controlsCache = new BitmapFontCache(fpsFont, true);
+			createControlsCache();
+		}
         fpsCache = new BitmapFontCache(fpsFont, true);
         updateFpsCache();
 
@@ -91,6 +94,8 @@ public class CubeSolve implements ApplicationListener {
 
 	@Override
 	public void render() {
+		hudBatch.setProjectionMatrix(hudCam.combined);
+
 		camController.update();
         updateFpsCache();
 
@@ -105,7 +110,10 @@ public class CubeSolve implements ApplicationListener {
 
 		hudBatch.begin();
         fpsCache.draw(hudBatch);
-		controlsCache.draw(hudBatch);
+		if(Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+				|| Gdx.app.getType().equals(Application.ApplicationType.WebGL)) {
+			controlsCache.draw(hudBatch);
+		}
 		hudBatch.end();
 	}
 
@@ -125,7 +133,10 @@ public class CubeSolve implements ApplicationListener {
 		hudCam.update();
 		hudBatch.setProjectionMatrix(hudCam.combined);
 
-		createControlsCache();
+		if(Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+				|| Gdx.app.getType().equals(Application.ApplicationType.WebGL)) {
+			createControlsCache();
+		}
 	}
 
 	@Override
@@ -157,13 +168,17 @@ public class CubeSolve implements ApplicationListener {
 	}
 
 	private void createControlsCache() {
-		controlsCache.clear();
-		float y = fpsFont.getLineHeight();
-		for(int i = CONTROLS_INFO.length-1; i >= 0; i--) { // Backwards because Y is upside down
-			String s = CONTROLS_INFO[i];
+		// The controls only matter for desktop since it's the only platform with a keyboard
+		if(Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+				|| Gdx.app.getType().equals(Application.ApplicationType.WebGL)) {
+			controlsCache.clear();
+			float y = fpsFont.getLineHeight();
+			for (int i = CONTROLS_INFO.length - 1; i >= 0; i--) { // Backwards because Y is upside down
+				String s = CONTROLS_INFO[i];
 
-			controlsCache.addText(s, 4, y);
-			y += fpsFont.getLineHeight();
+				controlsCache.addText(s, 4, y);
+				y += fpsFont.getLineHeight();
+			}
 		}
 	}
 
