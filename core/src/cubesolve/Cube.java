@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
@@ -16,11 +17,14 @@ import java.util.Random;
 /**
  * Rubik's cube containing multiple cubelets
  */
-public class Cube implements Disposable, RenderableProvider {
+public class Cube implements Disposable {
 
     private final int size;
     private final Cubelet[][][] cubelets;
     private Mesh mesh;
+    private Model model;
+    private ModelInstance modelInstance;
+    private ModelBuilder modelBuilder;
     private boolean disableAutoRerender;
     private Texture cubeletTexture;
     private Material cubeMaterial;
@@ -33,6 +37,8 @@ public class Cube implements Disposable, RenderableProvider {
     public Cube(int size) {
         this.size = size;
         this.cubelets = new Cubelet[size][size][size];
+
+        modelBuilder = new ModelBuilder();
 
         cubeletTexture = new Texture(Gdx.files.internal("cubelet.png"));
         cubeMaterial = new Material(ColorAttribute.createSpecular(Color.WHITE),
@@ -62,7 +68,7 @@ public class Cube implements Disposable, RenderableProvider {
      * @param environment Environment to render with
      */
     public void render(ModelBatch batch, Environment environment) {
-        batch.render(this, environment);
+        batch.render(modelInstance, environment);
     }
 
     /**
@@ -230,7 +236,10 @@ public class Cube implements Disposable, RenderableProvider {
     private void rerenderCube() {
         if(mesh != null)
             mesh.dispose();
+        if(model != null)
+            model.dispose();
 
+        modelBuilder.begin();
         MeshBuilder builder = new MeshBuilder();
         float startX, startY, startZ;
         startX = startY = startZ = -cubelets.length*3f/2f;
@@ -245,6 +254,9 @@ public class Cube implements Disposable, RenderableProvider {
             }
         }
         this.mesh = builder.end();
+        this.modelBuilder.part("cube", mesh, GL20.GL_TRIANGLES, cubeMaterial);
+        this.model = modelBuilder.end();
+        this.modelInstance = new ModelInstance(model);
     }
 
     private void fillWithDefault() {
@@ -268,14 +280,4 @@ public class Cube implements Disposable, RenderableProvider {
         }
     }
 
-    @Override
-    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-        Renderable cubeRenderable = pool.obtain();
-        cubeRenderable.material = cubeMaterial;
-        cubeRenderable.mesh = mesh;
-        cubeRenderable.primitiveType = GL20.GL_TRIANGLES;
-        cubeRenderable.meshPartOffset = 0;
-        cubeRenderable.meshPartSize = mesh.getNumVertices() * 6;
-        renderables.add(cubeRenderable);
-    }
 }
